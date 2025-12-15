@@ -34,6 +34,8 @@ echo 1 - Train model (validate, make_train, finetune, create)
 echo 2 - Test model (autotest)
 echo 3 - Update dataset (validate + split)
 echo 4 - Rebuild llama.cpp (clone ^& build)
+echo 5 - Scrape and create dataset
+echo 6 - Reduce dataset
 echo 0 - Exit
 echo.
 set /p CHOICE= Wybierz opcje (0-4) ^> 
@@ -42,6 +44,8 @@ if "%CHOICE%"=="1" goto TRAIN
 if "%CHOICE%"=="2" goto TEST
 if "%CHOICE%"=="3" goto DATA
 if "%CHOICE%"=="4" goto BUILD
+if "%CHOICE%"=="5" goto SCRAPE
+if "%CHOICE%"=="6" goto REDUCE
 if "%CHOICE%"=="0" exit /b 0
 goto MENU
 
@@ -80,6 +84,30 @@ if errorlevel 1 (
 cmake --build . --config Release
 cd /d "%ROOT%"
 echo [BUILD] done.
+pause
+goto MENU
+
+:SCRAPE
+echo [SCRAPE] Scraping and creating dataset
+if not exist "%ROOT%scripts\scrape.py" (
+  echo ERROR: brak scripts\scrape.py
+  pause
+  goto MENU
+)
+"%PYTHON%" "%ROOT%scripts\scrape.py" --urls https://github.com/ssomar/ExecutableItems/wiki https://github.com/LuckPerms/LuckPerms/wiki --out "%ROOT%raw_sources" --make-dataset --dataset-out "%ROOT%data\sft_dataset.jsonl"
+echo [SCRAPE] done.
+pause
+goto MENU
+
+:REDUCE
+echo [REDUCE] Reducing dataset
+if not exist "%ROOT%scripts\reduce_dataset.py" (
+  echo ERROR: brak scripts\reduce_dataset.py
+  pause
+  goto MENU
+)
+"%PYTHON%" "%ROOT%scripts\reduce_dataset.py" --input "%ROOT%data\sft_dataset.jsonl" --output "%ROOT%data\sft_dataset_reduced.jsonl" --max_lines 800
+echo [REDUCE] done. Use reduced file if needed.
 pause
 goto MENU
 
