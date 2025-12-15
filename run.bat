@@ -150,19 +150,13 @@ echo ollama pull %MODEL_URL%
 ollama pull %MODEL_URL%
 
 echo 4) Download base GGUF if not present
-if exist "%ROOT%models\base.gguf" goto SKIP_DOWNLOAD
 echo Downloading base model...
-set "GGUF_URL=https://huggingface.co/speakleash/Bielik-4.5B-v3.0-Instruct-GGUF/resolve/main/Bielik-4.5B-v3.0-Instruct.Q8_0.gguf"
-set "GGUF_FILE=%ROOT%models\base.gguf"
-"%PYTHON%" "%ROOT%scripts\download_gguf.py" "%GGUF_URL%" "%GGUF_FILE%"
-if %errorlevel% neq 0 goto DOWNLOAD_FAILED
-:SKIP_DOWNLOAD
-goto AFTER_DOWNLOAD
-:DOWNLOAD_FAILED
-echo Download failed.
-pause
-goto MENU
-:AFTER_DOWNLOAD
+"%PYTHON%" "%ROOT%scripts\download_gguf.py" "https://huggingface.co/speakleash/Bielik-4.5B-v3.0-Instruct-GGUF/resolve/main/Bielik-4.5B-v3.0-Instruct.Q8_0.gguf" "%ROOT%models\base.gguf"
+if %errorlevel% neq 0 (
+  echo Download failed.
+  pause
+  goto MENU
+)
 
 REM 5) Run finetune if finetune.exe available
 set "FINETUNE_EXE=%ROOT%tools\llama.cpp\build\bin\Release\finetune.exe"
