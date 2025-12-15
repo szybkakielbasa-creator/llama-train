@@ -153,7 +153,7 @@ echo 4) Download base GGUF if not present
 if not exist "%ROOT%models\base.gguf" (
   echo Downloading base model...
   "%PYTHON%" "%ROOT%scripts\download_gguf.py" "https://huggingface.co/speakleash/Bielik-4.5B-v3.0-Instruct-GGUF/resolve/main/Bielik-4.5B-v3.0-Instruct.Q8_0.gguf" "%ROOT%models\base.gguf"
-  if errorlevel 1 (
+  if %errorlevel% neq 0 (
     echo Download failed.
     pause
     goto MENU
