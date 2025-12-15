@@ -27,6 +27,8 @@ Run `run.bat` and follow the menu:
 2. **Test model**: Runs autotest on the finetuned model.
 3. **Update dataset**: Validates and splits the dataset.
 4. **Rebuild llama.cpp**: Clones and builds llama.cpp with CUDA support.
+5. **Scrape and create dataset**: Scrapes websites and generates sft_dataset.jsonl.
+6. **Reduce dataset**: Reduces the number of lines in sft_dataset.jsonl (e.g., from 1200 to 800).
 
 ## Building llama.cpp
 
