@@ -94,7 +94,16 @@ if not exist "%ROOT%scripts\scrape.py" (
   pause
   goto MENU
 )
-"%PYTHON%" "%ROOT%scripts\scrape.py" --urls https://github.com/ssomar/ExecutableItems/wiki https://github.com/LuckPerms/LuckPerms/wiki --out "%ROOT%raw_sources" --make-dataset --dataset-out "%ROOT%data\sft_dataset.jsonl"
+echo Podaj URL-e do scrapowania (oddzielone spacjami, np. https://example.com https://example2.com):
+set /p URLS=
+if "%URLS%"=="" (
+  echo Brak URL-i, używam domyślnych.
+  set URLS=https://github.com/ssomar/ExecutableItems/wiki https://github.com/LuckPerms/LuckPerms/wiki
+)
+echo Podaj max stron per seed (domyślnie 200):
+set /p MAX_PAGES=
+if "%MAX_PAGES%"=="" set MAX_PAGES=200
+"%PYTHON%" "%ROOT%scripts\scrape.py" --urls %URLS% --out "%ROOT%raw_sources" --make-dataset --dataset-out "%ROOT%data\sft_dataset.jsonl" --max-pages-per-seed %MAX_PAGES%
 echo [SCRAPE] done.
 pause
 goto MENU
@@ -106,8 +115,14 @@ if not exist "%ROOT%scripts\reduce_dataset.py" (
   pause
   goto MENU
 )
-"%PYTHON%" "%ROOT%scripts\reduce_dataset.py" --input "%ROOT%data\sft_dataset.jsonl" --output "%ROOT%data\sft_dataset_reduced.jsonl" --max_lines 800
-echo [REDUCE] done. Use reduced file if needed.
+echo Podaj maksymalną liczbę linii (domyślnie 800):
+set /p MAX_LINES=
+if "%MAX_LINES%"=="" set MAX_LINES=800
+echo Czy losowe próbkowanie? (y/n, domyślnie n):
+set /p RANDOM_CHOICE=
+if "%RANDOM_CHOICE%"=="y" set RANDOM_FLAG=--random
+"%PYTHON%" "%ROOT%scripts\reduce_dataset.py" --input "%ROOT%data\sft_dataset.jsonl" --output "%ROOT%data\sft_dataset_reduced.jsonl" --max_lines %MAX_LINES% %RANDOM_FLAG%
+echo [REDUCE] done. Użyj zmniejszonego pliku jeśli potrzebujesz.
 pause
 goto MENU
 
