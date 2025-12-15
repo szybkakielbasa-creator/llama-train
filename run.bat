@@ -152,7 +152,7 @@ ollama pull %MODEL_URL%
 echo 4) Download base GGUF if not present
 if not exist "%ROOT%models\base.gguf" (
   echo Downloading base model...
-  powershell -Command "Invoke-WebRequest -Uri 'https://huggingface.co/speakleash/Bielik-4.5B-v3.0-Instruct-GGUF/resolve/main/Bielik-4.5B-v3.0-Instruct.Q8_0.gguf' -OutFile '%ROOT%models\base.gguf'"
+  "%PYTHON%" "%ROOT%scripts\download_gguf.py" "https://huggingface.co/speakleash/Bielik-4.5B-v3.0-Instruct-GGUF/resolve/main/Bielik-4.5B-v3.0-Instruct.Q8_0.gguf" "%ROOT%models\base.gguf"
   if errorlevel 1 (
     echo Download failed.
     pause
